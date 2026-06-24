@@ -1,6 +1,6 @@
 ---
 name: antigravity-delegate
-description: Use when you want to delegate a coding task to the Antigravity CLI (agy) as a headless implementer while Claude orchestrates. Claude writes a self-contained brief, you pick the implementation model, Antigravity does the edits, Claude reviews the diff (code-review + clean-code) and loops feedback back to Antigravity until it passes, then you review and commit. Triggers: "delegate this to Antigravity", "have agy build", "antigravity-delegate".
+description: Use when you want to delegate a coding task to the Antigravity CLI (agy) as a headless implementer while Claude orchestrates. Claude writes a self-contained brief, you pick the implementation model, Antigravity does the edits, Claude reviews the diff (code-review + clean-code) and loops feedback back to Antigravity until it passes, then you review and commit. Trigger phrases include "delegate this to Antigravity", "have agy build", and "antigravity-delegate".
 ---
 
 # Antigravity Delegate
