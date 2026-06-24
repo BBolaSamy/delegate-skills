@@ -43,7 +43,7 @@ Before installing, make sure the Antigravity CLI (`agy`) is installed and authen
 Install the skill using the Skills CLI:
 
 ```bash
-npx skills add <your-github-user>/<repo> --skill antigravity-delegate --agent claude-code
+npx skills add BBolaSamy/delegate-skills --skill antigravity-delegate --agent claude-code
 ```
 
 ### Usage
