@@ -1,0 +1,13 @@
+# Antigravity delegate runtime scratch (briefs, feedback files)
+.antigravity-delegate/
+
+# Local skill-discovery symlink (machine-specific absolute path); source of
+# truth is skills/antigravity-delegate/
+.claude/
+
+# macOS junk (AppleDouble files on non-HFS volumes, Finder metadata)
+._*
+.DS_Store
+
+# Internal design docs (spec + implementation plan) — not published
+docs/
