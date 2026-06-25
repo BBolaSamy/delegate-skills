@@ -5,9 +5,13 @@ loop feedback back to `agy` or present to the human.
 
 ## Two passes
 
-1. **code-review** — correctness, bugs, security, broken acceptance criteria.
-2. **clean-code** — invoke the `clean-code-guard` skill (Clean Code, SOLID, DRY,
-   KISS, YAGNI, LLM failure modes).
+1. **correctness** — bugs, security, broken acceptance criteria.
+2. **clean-code** — maintainability: Clean Code, SOLID, DRY, KISS, YAGNI, and
+   common LLM failure modes.
+
+If your orchestrating agent provides dedicated review tooling — e.g. Claude
+Code's `/code-review` command and the `clean-code-guard` skill — use it for
+these passes. Otherwise the orchestrator performs the review directly.
 
 ## Severity bar (what forces another loop)
 

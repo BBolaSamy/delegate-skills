@@ -1,6 +1,6 @@
 # Model selection
 
-Claude uses this table to **recommend** a model. The human **always** makes the
+The orchestrator uses this table to **recommend** a model. The human **always** makes the
 final choice (SKILL.md step 3) — never dispatch before they confirm.
 
 | Task shape | Recommend | Why |
