@@ -1,5 +1,5 @@
-# Antigravity delegate runtime scratch (briefs, feedback files)
-.antigravity-delegate/
+# Delegate-skill runtime scratch (briefs, feedback files) — one dir per skill
+.*-delegate/
 
 # Local skill-discovery symlink (machine-specific absolute path); source of
 # truth is skills/antigravity-delegate/
