@@ -1,82 +1,74 @@
-# Antigravity Delegate
+# Delegate Skills
 
-`antigravity-delegate` is a portable skill for Claude Code, OpenCode, and Cursor that orchestrates coding tasks by delegating the implementation to the Antigravity CLI (`agy`) running headless. Your coding agent writes a self-contained brief, lets `agy` perform the code edits, then reviews the result and loops feedback back to `agy` until it passes review — leaving the final review and commit to you.
+**delegate-skills** is a family of skills that delegate a coding task to a headless coding-agent CLI. Your orchestrating agent (Claude Code, OpenCode, Cursor, …) writes a self-contained brief, you pick the model, the implementer CLI does the edits, your agent reviews the diff and loops feedback back until it passes — and **you** commit. There is one skill per implementer:
+
+| Skill | Delegates to | Implementer CLI |
+|---|---|---|
+| `antigravity-delegate` | Antigravity | `agy` |
+| `opencode-delegate` | OpenCode | `opencode` |
+| `cursor-delegate` | Cursor | `cursor-agent` |
+| `claude-code-delegate` | Claude Code | `claude` |
 
 ## Roles
 
-* **The orchestrating agent (orchestrator + reviewer)** — Claude Code, OpenCode, or Cursor: writes the brief, recommends a model, dispatches to `agy`, reviews the diff (correctness + clean-code), and writes feedback. It **never edits the implementer's code** and **never commits or pushes**.
-* **`agy` (implementer):** Makes all code edits. Never commits.
-* **You (human):** Choose the model, do the final review, and commit.
+* **The orchestrating agent (orchestrator + reviewer):** writes the brief, recommends a model, dispatches to the implementer CLI, reviews the diff (correctness + clean-code), and writes feedback. It **never edits the implementer's code** and **never commits or pushes**.
+* **The implementer CLI:** makes all code edits. Never commits.
+* **You (human):** choose the model, do the final review, and commit.
 
 ## Requirements
 
-* **Antigravity CLI (`agy`)**: Installed and available on your PATH.
-  * **Authentication**: Authenticate via `agy login` or by setting an API key (`ANTIGRAVITY_API_KEY` or `GEMINI_API_KEY`). If using Claude models, an Anthropic key (`ANTHROPIC_API_KEY`) is also required.
-* **Git**: The workspace must be a git repository.
+* **The implementer CLI for the skill(s) you install** — `agy` (Antigravity), `opencode` (OpenCode), `cursor-agent` (Cursor), or `claude` (Claude Code) — installed, on PATH, and authenticated. Each skill's `references/<impl>-commands.md` documents the exact dispatch command, auth step, and model list.
+* **Git:** the workspace must be a git repository.
 
-## Workflow
+## Workflow (same for every skill)
 
-1. **Brief Formulation:** The agent confirms the scope of the task and writes a self-contained brief.
-2. **Model Selection:** The agent recommends an implementation model and pauses. **You always pick the model** before dispatch.
-3. **Dispatch to `agy`:** The agent dispatches the brief to `agy` running in a headless print mode (`agy -p "<prompt>" --model "<name>" --dangerously-skip-permissions`).
-4. **Capture Diff:** The agent uses `git diff` and `git status --porcelain` to see exactly what `agy` changed.
-5. **Review:** The agent runs two review passes on the diff (correctness + clean-code). On Claude Code it can use `/code-review` and `clean-code-guard`; on other agents it reviews directly.
-6. **Feedback Loop:** If there are blocking issues, the agent loops feedback back to `agy` using a **fresh** dispatch (`agy -p`, NOT `--continue`). This iteration is **capped at 3 cycles** to prevent infinite churn.
-7. **Final Review & Commit:** Once the review passes (or the iteration cap is reached), the agent presents the diff to you. You review the final code and make the commit.
+1. **Brief Formulation:** the agent confirms scope and writes a self-contained brief.
+2. **Model Selection:** the agent recommends a model and pauses. **You always pick the model** before dispatch.
+3. **Dispatch:** the agent runs the implementer CLI headless (e.g. `agy -p`, `opencode run`, `cursor-agent -p`, `claude -p`) with the brief + chosen model.
+4. **Capture Diff:** the agent uses `git diff` and `git status --porcelain` to see exactly what changed.
+5. **Review:** two passes on the diff (correctness + clean-code). On Claude Code it can use `/code-review` and `clean-code-guard`; on other agents it reviews directly.
+6. **Feedback Loop:** blocking issues go back as a **fresh** re-dispatch, **capped at 3 cycles** to prevent infinite churn.
+7. **Final Review & Commit:** the agent presents the diff; you review and commit.
 
-## Available Models
+## Install
 
-The human **always** picks the implementation model before dispatch. Available models (with effort tiers) are:
-
-* `Gemini 3.5 Flash (Low)` (or `(Medium)` / `(High)`) - Trivial edits / formatting
-* `Gemini 3.1 Pro (High)` (or `(Low)`) - Large scaffolding / new feature surface
-* `Claude Sonnet 4.6 (Thinking)` - Tricky logic / refactor / correctness-critical
-* `Claude Opus 4.6 (Thinking)` - Hardest reasoning
-* `GPT-OSS 120B (Medium)` - Cost-sensitive / open-weights
-
-## Install / Use
-
-### Prerequisites
-Before installing, make sure the Antigravity CLI (`agy`) is installed and authenticated first (see [Requirements](#requirements)).
-
-### Installation
-Install the skill with the Skills CLI, targeting your agent with `--agent`:
+Install whichever delegate skill(s) you want with the Skills CLI (add `--agent <your-agent>` to target a specific orchestrator, e.g. `claude-code`):
 
 ```bash
-# Claude Code
-npx skills add BBolaSamy/delegate-skills --skill antigravity-delegate --agent claude-code
-
-# OpenCode
-npx skills add BBolaSamy/delegate-skills --skill antigravity-delegate --agent opencode
-
-# Cursor
-npx skills add BBolaSamy/delegate-skills --skill antigravity-delegate --agent cursor
+npx skills add BBolaSamy/delegate-skills --skill antigravity-delegate
+npx skills add BBolaSamy/delegate-skills --skill opencode-delegate
+npx skills add BBolaSamy/delegate-skills --skill cursor-delegate
+npx skills add BBolaSamy/delegate-skills --skill claude-code-delegate
 ```
 
-### Usage
-Once installed, ask your agent (Claude Code, OpenCode, or Cursor) inside your project to delegate a task. For example:
-* "delegate this to Antigravity"
-* "have agy build [task]"
+Each skill needs **its** implementer CLI installed and authenticated first.
+
+## Usage
+
+Ask your orchestrating agent to delegate a task to a specific implementer — name it in the request. For example:
+
+* "delegate this to OpenCode"
+* "have cursor-agent build [task]"
 
 ## Example
 
 **User:**
-> Add a new error logging module and delegate this to Antigravity.
+> Add a new error logging module and delegate this to OpenCode.
 
 **Agent:**
 > I've written the brief to create the error logging module.
-> I'd use **Gemini 3.1 Pro (High)** for this because it's a new feature surface. Want me to go with that, or pick another (Gemini 3.5 Flash, Claude Sonnet 4.6, Claude Opus 4.6, GPT-OSS 120B)?
+> I'd use **anthropic/claude-sonnet-4** for this because it's a new feature surface. Want me to go with that, or pick another (run `opencode models` for the list)?
 
 **User:**
-> Yes, Gemini 3.1 Pro (High) is fine.
+> Yes, that's fine.
 
 **Agent:**
-> Dispatching to `agy`...
+> Dispatching to `opencode`...
 >
-> *[agy completes the implementation]*
+> *[opencode completes the implementation]*
 >
-> Reviewing the diff... I found a missing check for the log directory, looping feedback back to `agy`...
+> Reviewing the diff... I found a missing check for the log directory, looping feedback back to `opencode`...
 >
-> *[agy completes iteration 2]*
+> *[opencode completes iteration 2]*
 >
 > Review clean! Here is the final diff for your review. If it looks good, you can commit it.
