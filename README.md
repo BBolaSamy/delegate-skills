@@ -1,6 +1,6 @@
-# Delegate Skills
+# Delegate Agents
 
-**delegate-skills** is a family of skills that delegate a coding task to a headless coding-agent CLI. Your orchestrating agent (Claude Code, OpenCode, Cursor, …) writes a self-contained brief, you pick the model, the implementer CLI does the edits, your agent reviews the diff and loops feedback back until it passes — and **you** commit. There is one skill per implementer:
+**delegate-agents** is a family of skills that each delegate a coding task to a headless coding-agent CLI. Your orchestrating agent (Claude Code, OpenCode, Cursor, …) writes a self-contained brief, you pick the model, the implementer CLI does the edits, your agent reviews the diff and loops feedback back until it passes — and **you** commit. There is one skill per implementer:
 
 | Skill | Delegates to | Implementer CLI |
 |---|---|---|
@@ -35,10 +35,10 @@
 Install whichever delegate skill(s) you want with the Skills CLI (add `--agent <your-agent>` to target a specific orchestrator, e.g. `claude-code`):
 
 ```bash
-npx skills add BBolaSamy/delegate-skills --skill antigravity-delegate
-npx skills add BBolaSamy/delegate-skills --skill opencode-delegate
-npx skills add BBolaSamy/delegate-skills --skill cursor-delegate
-npx skills add BBolaSamy/delegate-skills --skill claude-code-delegate
+npx skills add BBolaSamy/delegate-agents --skill antigravity-delegate
+npx skills add BBolaSamy/delegate-agents --skill opencode-delegate
+npx skills add BBolaSamy/delegate-agents --skill cursor-delegate
+npx skills add BBolaSamy/delegate-agents --skill claude-code-delegate
 ```
 
 Each skill needs **its** implementer CLI installed and authenticated first.
